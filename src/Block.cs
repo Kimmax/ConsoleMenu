@@ -12,11 +12,12 @@ namespace Nuernberger.ConsoleMenu
         public Size Size { get; private set; }
 
         public string[] Buffer { get; private set; }
+        public int zIndex { get; internal set; }
 
         public ConsoleColor BlockBackgroundColor { get; set; }
         public ConsoleColor BlockForegorundColor { get; set; }
 
-        public Block(Position pos, Size size, ConsoleColor backColor = ConsoleColor.Black, ConsoleColor foreColor = ConsoleColor.Gray)
+        public Block(Position pos, Size size, ConsoleColor foreColor = ConsoleColor.Gray, ConsoleColor backColor = ConsoleColor.Black)
         {
             this.Position = pos;
             this.Size = size;
@@ -24,7 +25,7 @@ namespace Nuernberger.ConsoleMenu
             this.BlockBackgroundColor = backColor;
             this.BlockForegorundColor = foreColor;
 
-            this.Buffer = new string[this.Size.Height -1];
+            this.Buffer = new string[this.Size.Height];
 
             Init();
         }
@@ -37,12 +38,7 @@ namespace Nuernberger.ConsoleMenu
             }
         }
 
-        public void DrawCenteredText(string text)
-        {
-            DrawCenteredText(text, this.BlockForegorundColor);
-        }
-
-        public void DrawCenteredText(string text, ConsoleColor color)
+        public void WriteCenteredText(string text)
         {
             string clearedText = Regex.Replace(text, @"\$<.*?>", "");
 
@@ -51,9 +47,9 @@ namespace Nuernberger.ConsoleMenu
             this.Buffer[y] = this.Buffer[y].Remove(centeredX, clearedText.Length).Insert(centeredX, text);
         }
 
-        public void DrawTextAt(int x, int y, string text)
+        public void WriteTextAt(Position pos, string text)
         {
-            this.Buffer[y] = this.Buffer[y].Remove(x, text.Length).Insert(x, text);
+            this.Buffer[pos.Y] = this.Buffer[pos.Y].Remove(pos.X, text.Length).Insert(pos.X, text);
         }
 
         internal void Draw()
@@ -75,7 +71,7 @@ namespace Nuernberger.ConsoleMenu
             Console.ForegroundColor = oldForegorundColor;
         }
 
-        internal void WriteColorised(string text)
+        private void WriteColorised(string text)
         {
             string[] textParts = Regex.Split(text, @"(\$<.*?>)", RegexOptions.Compiled);
             

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -7,16 +8,17 @@ namespace Nuernberger.ConsoleMenu
 {
     public class LayerManager
     {
-        public List<Block> Layers { get; private set; }
+        public ObservableCollection<Block> Layers { get; private set; }
 
         public LayerManager()
         {
-            this.Layers = new List<Block>();
+            this.Layers = new ObservableCollection<Block>();
         }
 
         public void AddLayer(Block layer)
         {
             this.Layers.Add(layer);
+            layer.zIndex = this.Layers.Count;
         }
 
         public void AddLayer(Block layer, int zIndex)
@@ -28,6 +30,11 @@ namespace Nuernberger.ConsoleMenu
         {
             foreach (Block layer in this.Layers)
                 layer.Draw();
+        }
+
+        public void MoveToZ(Block layer, int zIndex)
+        {
+            this.Layers.Move(layer.zIndex, zIndex);
         }
     }
 }
