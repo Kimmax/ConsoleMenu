@@ -20,14 +20,14 @@ namespace ConsoleApplication1
         LayerManager lManager = new LayerManager();
         public void Run()
         {
-            Block blueBlock = new Block(new Position(5, 5), new Size(5, 8), ConsoleColor.DarkBlue, ConsoleColor.Black);
-            blueBlock.DrawCenteredText("1");
+            Block blueBlock = new Block(new Position(5, 5), new Size(10, 16), ConsoleColor.Blue, ConsoleColor.Black);
+            blueBlock.DrawCenteredText("$<White>Test1 $<Black>Test2");
 
-            Block redBlock = new Block(new Position(8, 8), new Size(5, 8), ConsoleColor.Red, ConsoleColor.Black);
-            redBlock.DrawCenteredText("2");
+            Block redBlock = new Block(new Position(13, 13), new Size(10, 16), ConsoleColor.Red, ConsoleColor.Black);
+            redBlock.DrawCenteredText("$<Black>Test3 $<White>Test4");
 
-            Block greenBlock = new Block(new Position(12, 10), new Size(5, 8), ConsoleColor.Green, ConsoleColor.Black);
-            greenBlock.DrawCenteredText("3");
+            Block greenBlock = new Block(new Position(25, 5), new Size(10, 16), ConsoleColor.Green, ConsoleColor.Black);
+            greenBlock.DrawCenteredText("$<White>Test5 $<Black>Test6");
 
             lManager.AddLayer(blueBlock);
             lManager.AddLayer(redBlock);
