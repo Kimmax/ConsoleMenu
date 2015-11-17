@@ -81,10 +81,16 @@ namespace Nuernberger.ConsoleMenu
             
             Regex backAndForeColorSelector = new Regex(@"\$<(.*?),(.*?)>(.*)", RegexOptions.Compiled);
             Regex foreColorSelector = new Regex(@"\$<(.*?)>(.*)", RegexOptions.Compiled);
+            Regex resetColorSelector = new Regex(@"\$</>", RegexOptions.Compiled);
 
             foreach (string s in textParts)
             {
-                if (backAndForeColorSelector.IsMatch(s))
+                if (resetColorSelector.IsMatch(s))
+                {
+                    Console.BackgroundColor = this.BlockBackgroundColor;
+                    Console.ForegroundColor = this.BlockForegorundColor;
+                }
+                else if (backAndForeColorSelector.IsMatch(s))
                 {
                     foreach (Match match in backAndForeColorSelector.Matches(s))
                     {
@@ -104,8 +110,6 @@ namespace Nuernberger.ConsoleMenu
                 {
                     Console.Write(s);
                 }
-
-
             }
         }
     }
