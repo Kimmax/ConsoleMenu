@@ -26,6 +26,16 @@ namespace Nuernberger.ConsoleMenu
             this.Layers.Insert(zIndex, layer);
         }
 
+        public void SetSelectedLayer(Block layer)
+        {
+            foreach (Block selectedLayer in this.Layers.Where(item => item.BlockSelected))
+            {
+                selectedLayer.BlockSelected = false;
+            }
+
+            this.Layers.Single(item => item == layer).BlockSelected = true;
+        }
+
         public void Draw()
         {
             foreach (Block layer in this.Layers)
