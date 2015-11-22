@@ -18,6 +18,8 @@ namespace Nuernberger.ConsoleMenu
         public int zIndex { get; internal set; }
         public bool BlockSelected { get; internal set; }
 
+        public bool IsVisible { get; set; }
+
         public ConsoleColor BlockBackgroundColor { get; set; }
         public ConsoleColor BlockForegorundColor { get; set; }
 
@@ -32,6 +34,8 @@ namespace Nuernberger.ConsoleMenu
             this.Buffer = new string[this.Size.Height];
             this.IsSelectedBuffer = new bool[this.Size.Height];
             this.IsSelectableBuffer = new bool[this.Size.Height];
+
+            this.IsVisible = true;
 
             Init();
         }
@@ -77,23 +81,44 @@ namespace Nuernberger.ConsoleMenu
             throw new InvalidOperationException();
         }
 
+        public string GetTextAt(int line)
+        {
+            if (line > this.Buffer.Length || line > this.Buffer.Length)
+                throw new ArgumentOutOfRangeException();
+
+            string clearedText = Regex.Replace(this.Buffer[line], @"\$<.*?>", "");
+            return clearedText.Trim();
+        }
+
         internal void Draw()
         {
-            ConsoleColor oldBackcolor = Console.BackgroundColor;
-            ConsoleColor oldForegorundColor = Console.ForegroundColor;
-
-            Console.BackgroundColor = this.BlockBackgroundColor;
-            Console.ForegroundColor = this.BlockForegorundColor;
-
-            for (int i = 0; i < this.Buffer.Length; i++)
+            if (this.IsVisible)
             {
-                Console.SetCursorPosition(this.Position.X, this.Position.Y + i);
+                ConsoleColor oldBackcolor = Console.BackgroundColor;
+                ConsoleColor oldForegorundColor = Console.ForegroundColor;
 
-                WriteColorised(this.Buffer[i], i);
+                Console.BackgroundColor = this.BlockBackgroundColor;
+                Console.ForegroundColor = this.BlockForegorundColor;
+
+                for (int i = 0; i < this.Buffer.Length; i++)
+                {
+                    Console.SetCursorPosition(this.Position.X, this.Position.Y + i);
+
+                    WriteColorised(this.Buffer[i], i);
+                }
+
+                Console.BackgroundColor = oldBackcolor;
+                Console.ForegroundColor = oldForegorundColor;
             }
+            else
+            {
+                for (int i = 0; i < this.Buffer.Length; i++)
+                {
+                    Console.SetCursorPosition(this.Position.X, this.Position.Y + i);
 
-            Console.BackgroundColor = oldBackcolor;
-            Console.ForegroundColor = oldForegorundColor;
+                    WriteColorised(new String(' ', this.Size.Width), i);
+                }
+            }
         }
 
         private void WriteColorised(string text, int currentLine)
@@ -118,13 +143,13 @@ namespace Nuernberger.ConsoleMenu
                     {
                         if (this.BlockSelected && this.IsSelectableBuffer[currentLine] && this.IsSelectedBuffer[currentLine])
                         {
-                            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${HighliteForegorund}"));
-                            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${HighliteBackgorund}"));
+                            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${HighliteForegorund}"), true);
+                            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${HighliteBackgorund}"), true);
                         }
                         else
                         {
-                            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"));
-                            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Backgorund}"));
+                            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"), true);
+                            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Backgorund}"), true);
                         }
                         
                     }
@@ -133,15 +158,15 @@ namespace Nuernberger.ConsoleMenu
                 {
                     foreach (Match match in backAndForeColorSelector.Matches(s))
                     {
-                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"));
-                        Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Backgorund}"));
+                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"), true);
+                        Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Backgorund}"), true);
                     }
                 }
                 else if (foreColorSelector.IsMatch(s))
                 {
                     foreach (Match match in foreColorSelector.Matches(s))
                     {
-                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"));
+                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), match.Result("${Foregorund}"), true);
                         Console.BackgroundColor = this.BlockBackgroundColor;
                     }
                 }
