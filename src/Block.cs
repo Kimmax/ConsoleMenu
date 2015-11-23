@@ -69,7 +69,6 @@ namespace Nuernberger.ConsoleMenu
                 this.IsSelectedBuffer[i] = false;
 
             this.IsSelectedBuffer[line] = true;
-            Draw();
         }
 
         public int GetSelectedLine()

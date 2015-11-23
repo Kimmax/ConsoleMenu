@@ -18,7 +18,12 @@ namespace Nuernberger.ConsoleMenu
         public void AddLayer(Block layer)
         {
             this.Layers.Add(layer);
-            layer.zIndex = this.Layers.Count;
+            layer.zIndex = this.Layers.Count -1;
+        }
+
+        public void RemoveLayer(Block layer)
+        {
+            this.Layers.Remove(layer);
         }
 
         public void AddLayer(Block layer, int zIndex)
