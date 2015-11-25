@@ -43,7 +43,10 @@ namespace Nuernberger.ConsoleMenu
 
         public void Draw()
         {
-            foreach (Block layer in this.Layers)
+            foreach (Block layer in this.Layers.Where(layer => layer.IsVisible == false))
+                layer.Draw();
+
+            foreach (Block layer in this.Layers.Where(layer => layer.IsVisible == true))
                 layer.Draw();
         }
 

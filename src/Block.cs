@@ -19,6 +19,7 @@ namespace Nuernberger.ConsoleMenu
         public bool BlockSelected { get; internal set; }
 
         public bool IsVisible { get; set; }
+        public bool WasLastDrawVisible { get; set; }
 
         public ConsoleColor BlockBackgroundColor { get; set; }
         public ConsoleColor BlockForegorundColor { get; set; }
@@ -57,9 +58,10 @@ namespace Nuernberger.ConsoleMenu
             this.Buffer[y] = this.Buffer[y].Remove(centeredX, clearedText.Length).Insert(centeredX, text);
         }
 
-        public void WriteTextAt(Position pos, string text)
+        public void WriteTextAt(Position pos, string text, bool clearString = true)
         {
             string clearedText = Regex.Replace(text, @"\$<.*?>", "");
+            this.Buffer[pos.Y] = new String(' ', this.Size.Width);
             this.Buffer[pos.Y] = this.Buffer[pos.Y].Remove(pos.X, clearedText.Length).Insert(pos.X, text);
         }
 
@@ -93,6 +95,8 @@ namespace Nuernberger.ConsoleMenu
         {
             if (this.IsVisible)
             {
+                this.WasLastDrawVisible = true;
+
                 ConsoleColor oldBackcolor = Console.BackgroundColor;
                 ConsoleColor oldForegorundColor = Console.ForegroundColor;
 
@@ -111,11 +115,16 @@ namespace Nuernberger.ConsoleMenu
             }
             else
             {
-                for (int i = 0; i < this.Buffer.Length; i++)
+                if (this.WasLastDrawVisible)
                 {
-                    Console.SetCursorPosition(this.Position.X, this.Position.Y + i);
+                    for (int i = 0; i < this.Buffer.Length; i++)
+                    {
+                        Console.SetCursorPosition(this.Position.X, this.Position.Y + i);
 
-                    WriteColorised(new String(' ', this.Size.Width), i);
+                        WriteColorised(new String(' ', this.Size.Width), i);
+                    }
+
+                    this.WasLastDrawVisible = false;
                 }
             }
         }
